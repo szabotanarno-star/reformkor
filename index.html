@@ -1,0 +1,630 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>A kortes bora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: egy keskeny történet-oszlop egy „éjszakai óra” idővonal alatt (Este 6 → Dél); jelenetlap, két döntési kártya, alatta rövid fogalmi kvíz. Hivatali papír + vasgallusz-tinta + borvörös pecsét. */
+:root{
+  --bg:#E9ECEB; --surface:#FBFCFA; --sunk:#E1E6E4; --ink:#1B2330; --muted:#566170; --line:#CDD4D6;
+  --wine:#7E1D35; --wine-soft:#F2DDE2; --wine-ink:#FFFFFF;
+  --gold:#9C7420; --gold-soft:#F4EAD2;
+  --good:#2C6A47; --good-soft:#DCEFE3; --bad:#A3382B; --bad-soft:#F6E0DC;
+  --f-display:"Alegreya",Georgia,"Times New Roman",serif;
+  --f-body:"Alegreya Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151B; --surface:#1A2029; --sunk:#232B36; --ink:#E7EAEE; --muted:#9FA9B6; --line:#333D4A;
+  --wine:#E3809A; --wine-soft:#3A1C25; --wine-ink:#1A0A10;
+  --gold:#D9B25E; --gold-soft:#33291A;
+  --good:#63C18D; --good-soft:#163426; --bad:#EE8273; --bad-soft:#3C1E1A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151B; --surface:#1A2029; --sunk:#232B36; --ink:#E7EAEE; --muted:#9FA9B6; --line:#333D4A;
+  --wine:#E3809A; --wine-soft:#3A1C25; --wine-ink:#1A0A10;
+  --gold:#D9B25E; --gold-soft:#33291A;
+  --good:#63C18D; --good-soft:#163426; --bad:#EE8273; --bad-soft:#3C1E1A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.55;padding-inline:16px;padding-block:20px 70px}
+.wrap{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1,h2{font-family:var(--f-display);font-weight:800;line-height:1.05;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2.4rem,9vw,3.8rem);color:var(--wine)}
+h2{font-size:1.75rem}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bar .brand{font-family:var(--f-display);font-style:italic;font-weight:700;font-size:1.15rem;color:var(--wine);margin-right:auto}
+.chip{font-family:var(--f-mono);font-size:.8rem;font-weight:700;border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 11px;font-variant-numeric:tabular-nums}
+.chip.score{background:var(--wine);border-color:var(--wine);color:var(--wine-ink)}
+.ghost{border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 13px;font-size:.92rem}
+.ghost:hover{border-color:var(--wine)}
+
+/* éjszakai óra */
+.clock{display:flex;justify-content:space-between;position:relative;padding-top:4px}
+.clock::before{content:"";position:absolute;left:12px;right:12px;top:14px;height:2px;background:var(--line)}
+.stop{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--f-mono);font-size:.66rem;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;max-width:58px}
+.stop i{width:22px;height:22px;border-radius:50%;background:var(--surface);border:2.5px solid var(--line);display:block}
+.stop.done i{background:var(--ink);border-color:var(--ink)}
+.stop.now i{background:var(--wine);border-color:var(--wine);box-shadow:0 0 0 5px var(--wine-soft)}
+.stop.now{color:var(--ink);font-weight:700}
+
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:4px;padding:24px;position:relative}
+.meta{font-family:var(--f-mono);font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.story{display:flex;flex-direction:column;gap:14px}
+.story p{max-width:64ch}
+.story .lede::first-letter{font-family:var(--f-display);font-weight:800;color:var(--wine);float:left;font-size:3.3rem;line-height:.85;padding:4px 8px 0 0}
+.v{background:none;border:0;padding:0 1px;font:inherit;color:inherit;text-align:left;display:inline;cursor:help;
+   border-bottom:2px dotted var(--wine);background-image:linear-gradient(transparent 62%,var(--wine-soft) 62%)}
+.v:hover{background-image:linear-gradient(var(--wine-soft),var(--wine-soft))}
+
+.choices{display:grid;gap:12px}
+.choice{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:4px;padding:16px 18px;transition:transform .12s,border-color .12s}
+.choice:hover:not(:disabled){border-color:var(--wine);transform:translateY(-2px)}
+.choice .k{font-family:var(--f-display);font-weight:800;font-size:1.35rem;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--wine-soft);color:var(--wine)}
+.choice > span:last-child{min-width:0}
+.choice.picked{border-color:var(--wine);background:var(--sunk)}
+.choice:disabled{cursor:default;transform:none}
+.choice.faded{opacity:.45}
+.outcome{border-left:3px solid var(--wine);padding:4px 0 4px 16px;font-style:italic;max-width:64ch}
+
+.quiz{background:var(--sunk);border-radius:4px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.quiz h3{margin:0;font-size:.8rem;font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--wine)}
+.q{display:flex;flex-direction:column;gap:10px}
+.q .prompt{font-weight:700}
+.q .pts{font-family:var(--f-mono);font-size:.7rem;color:var(--muted);font-weight:500;margin-left:6px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:480px){.opts{grid-template-columns:1fr}}
+.opt{background:var(--surface);border:1.5px solid var(--line);border-radius:4px;padding:10px 12px;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--wine)}
+.opt.ok{background:var(--good-soft);border-color:var(--good)}
+.opt.no{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.typerow{display:flex;gap:8px;flex-wrap:wrap}
+.typerow input,.field{flex:1 1 180px;min-width:0;font:inherit;padding:10px 12px;border-radius:4px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn{background:var(--ink);color:var(--surface);border:0;border-radius:4px;padding:10px 18px;font-weight:700}
+.btn.big{font-size:1.05rem;padding:14px 24px}
+.btn.wine{background:var(--wine);color:var(--wine-ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.fb{font-size:.96rem;border-radius:4px;padding:8px 12px}
+.fb.ok{background:var(--good-soft);border-left:4px solid var(--good)}
+.fb.no{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row .hint{color:var(--muted);font-size:.92rem}
+
+/* kezdőlap */
+.seal{position:absolute;top:18px;right:18px;width:78px;height:78px;border-radius:50%;background:var(--wine);color:var(--wine-ink);display:grid;place-items:center;text-align:center;font-family:var(--f-display);font-weight:800;font-size:.72rem;line-height:1.05;transform:rotate(-12deg);box-shadow:inset 0 0 0 4px var(--wine),inset 0 0 0 5.5px var(--wine-ink)}
+.seal b{display:block;font-size:1.2rem}
+@media (max-width:480px){.seal{width:62px;height:62px;font-size:.6rem;top:12px;right:12px}.seal b{font-size:1rem}}
+.start h1{padding-right:84px}
+.lead{font-size:1.14rem;max-width:60ch}
+.cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.who{background:var(--sunk);border-radius:4px;padding:10px 12px;font-size:.94rem;line-height:1.35}
+.who b{display:block;font-family:var(--f-display);font-weight:700;font-size:1.08rem;color:var(--wine)}
+.rules{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;color:var(--muted)}
+textarea{width:100%;min-height:120px;font:inherit;padding:12px;border-radius:4px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);resize:vertical}
+.big-score{font-family:var(--f-display);font-weight:800;font-size:3.4rem;color:var(--wine);line-height:1;font-variant-numeric:tabular-nums}
+.tally{display:grid;grid-template-columns:1fr auto;gap:6px 16px;font-variant-numeric:tabular-nums}
+.tally span:nth-child(even){font-family:var(--f-mono);font-weight:700;text-align:right}
+.path{margin:0;padding-left:20px;color:var(--muted);font-size:.94rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-family:var(--f-mono);font-size:.76rem;background:var(--good-soft);border:1px solid var(--good);border-radius:4px;padding:3px 9px}
+.motives{display:grid;gap:8px}
+.mot{display:grid;grid-template-columns:minmax(0,10rem) 1fr auto;gap:10px;align-items:center;font-size:.95rem}
+.mot .track{height:10px;background:var(--sunk);border-radius:2px;overflow:hidden}
+.mot .track i{display:block;height:100%;background:var(--gold)}
+.mot .n{font-family:var(--f-mono);font-size:.8rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.history{display:flex;flex-direction:column;gap:10px}
+.history li{margin-bottom:4px}
+.history ul{margin:0;padding-left:20px}
+
+.gloss{display:grid}
+.gloss div{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:4px 14px;padding:10px 0;border-bottom:1px solid var(--line)}
+.gloss div:last-child{border-bottom:0}
+.gloss .gh{margin:18px 0 2px;font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.gloss .gh:first-child{margin-top:4px}
+.gloss .t{font-family:var(--f-display);font-weight:700;color:var(--wine)}
+.gloss .n{grid-column:2;font-size:.88rem;color:var(--muted)}
+@media (max-width:480px){.gloss div{grid-template-columns:1fr}.gloss .n{grid-column:1}}
+#tip{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:540px;margin:0 auto;background:var(--ink);color:var(--bg);border-radius:4px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.28);z-index:5;display:flex;gap:12px;align-items:flex-start;font-size:.98rem;line-height:1.4}
+#tip b{color:var(--gold)}
+#tip button{margin-left:auto;background:none;border:0;color:var(--bg);font-size:1.3rem;line-height:1}
+.fade{animation:fade .35s ease both}
+@keyframes fade{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.choice{transition:none}}
+</style>
+
+<div class="wrap">
+  <div class="bar">
+    <span class="brand">Nagykálló, 1847</span>
+    <span class="chip score" id="score">0 pont</span>
+    <button class="ghost" id="glossBtn" type="button">Fogalomtár</button>
+  </div>
+  <div class="clock" id="clock" hidden></div>
+  <main id="app" class="wrap" style="gap:18px"></main>
+  <section class="card" id="glossary" hidden>
+    <div class="row" style="justify-content:space-between;margin-bottom:8px"><h2>Fogalomtár</h2><button class="ghost" type="button" id="glossClose">Bezár</button></div>
+    <div class="gloss" id="glossList"></div>
+  </section>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+/* ---------- Fogalmak ---------- */
+const V={
+ kovetutasitas:{t:"követutasítás",d:"A vármegyei közgyűlés írásos utasítása a megye két országgyűlési követének: hogyan szavazzanak az egyes ügyekben.",n:"Kötött mandátum: a követ nem dönthetett szabadon, és a megye visszahívhatta."},
+ kozgyules:{t:"vármegyei közgyűlés",d:"A nemesi vármegye döntéshozó gyűlése, ahol a megye nemesei megjelenhettek és szavazhattak.",n:"Itt választották a követeket és adták ki a követutasítást."},
+ bocskoros:{t:"bocskoros nemes",d:"Földdel alig vagy egyáltalán nem rendelkező, saját kezével dolgozó kisnemes; gúnynevei: hétszilvafás, kutyabőrös nemes.",n:"Életmódja a parasztéhoz hasonlított, de a közgyűlésen szavazott."},
+ kortes:{t:"kortes",d:"Választási ügynök, aki ígérettel, étellel-itallal, pénzzel szerez szavazatokat egy párt vagy jelölt számára.",n:"A kortesvacsora és a kortesbor a reformkori vármegyei élet ismert eszköze volt."},
+ adomentesseg:{t:"nemesi adómentesség",d:"A nemesség legfontosabb anyagi kiváltsága: nem fizetett hadiadót és házi adót.",n:"A szegény nemesnek gyakran ez volt az egyetlen kézzelfogható előjoga."},
+ kozteher:{t:"közteherviselés",d:"Az elv, hogy az adót minden lakos, a nemes is, vagyona arányában viselje.",n:"A liberális ellenzék fő követelése; 1848-ban törvény lett (VIII. tc.)."},
+ haziado:{t:"házi adó",d:"A vármegye működésének költségeit fedező adó, amelyet csak az adózó nép, főként a jobbágyság fizetett.",n:"Az 1840-es években vita folyt arról, hogy vállalja-e a nemesség is."},
+ adminisztrator:{t:"adminisztrátori rendszer",d:"1845-től a kormány számos megyébe a főispán helyett helytartót (adminisztrátort) küldött, hogy kormánypárti többséget szervezzen.",n:"Apponyi György kancellár politikája; az ellenzék a megyei önkormányzat megsértésének tartotta."},
+ konzervativ:{t:"Konzervatív Párt",d:"1846-ban alakult kormánypárt: fokozatos, az udvarral egyeztetett reformokat akart a rendi berendezkedés lényegének megőrzésével.",n:"Vezetői közé tartozott Dessewffy Emil és Apponyi György."},
+ ellenzeki:{t:"Ellenzéki Nyilatkozat",d:"Az 1847-ben alakult Ellenzéki Párt programja, fő szerkesztője Deák Ferenc; a párt elnöke Batthyány Lajos.",n:"Követelte a közteherviselést, a kötelező örökváltságot állami kármentesítéssel, a népképviseletet, az ősiség eltörlését."},
+ orokvaltsag:{t:"örökváltság",d:"A jobbágy egyszeri összeggel megváltja magát az úrbéri terhek alól, telke saját tulajdonává válik.",n:"1840-től önkéntes formában törvényes; az ellenzék kötelezővé tételét és állami kármentesítést kért."},
+ nepkepviselet:{t:"népképviselet",d:"Az országgyűlést nem a rendek küldik, hanem vagyon vagy műveltség alapján választójogot kapó polgárok választják.",n:"Az 1848: V. tc. vezette be."},
+ osiseg:{t:"ősiség",d:"1351 óta érvényes elv: a nemesi birtok nem adható el végleg, a nemzetség tulajdona marad.",n:"Akadályozta a hitelfelvételt; Széchenyi a Hitelben (1830) bírálta."},
+ erdekegyesites:{t:"érdekegyesítés",d:"Wesselényi Miklós és Kossuth Lajos elve: a nemesség önként mondjon le kiváltságairól, és egyesítse érdekét a nép érdekével.",n:"Célja a jobbágyság nemzetbe emelése volt."},
+ pestihirlap:{t:"Pesti Hírlap",d:"Kossuth Lajos szerkesztésében 1841-től megjelenő lap, a reformellenzék szócsöve.",n:"Vezércikkei a vármegyékben is vitákat indítottak."},
+ felkialtas:{t:"felkiáltás és szavazás (voksolás)",d:"A közgyűlés vitás ügyekben rendszerint felkiáltással döntött: az elnök a kiáltások alapján állapította meg a többséget. Ha ezt vitatták, el lehetett rendelni a szavazatok egyenkénti összeszedését.",n:"A szavazás nyílt volt: mindenki látta, ki hogyan szavaz, a kortes is. A szavazatszámlálás is a népesebb tábornak kedvezett."},
+ megyekepviselet:{t:"megyei képviseleti rendszer",d:"Javaslat arra, hogy a vármegyében ne a közgyűlésen megjelenő összes nemes döntsön, hanem választott képviselők testülete.",n:"Az 1840-es évek reformvitájának része; a centralisták (Eötvös József, Szalay László) határozottan támogatták. A kortesvilágot és a kisnemesi tömegek befolyását akarta visszaszorítani."},
+ urberiseg:{t:"úrbéri terhek",d:"A jobbágy szolgáltatásai földesurának: robot (ingyenmunka), kilenced, pénzbeli terhek.",n:"Ezek mellett állami hadiadót, házi adót és egyházi tizedet is fizetett."},
+ orszaggyules:{t:"rendi országgyűlés",d:"Pozsonyban ülésező kétkamarás gyűlés: felsőtábla (főrendek) és alsótábla (vármegyei és városi követek).",n:"Az utolsó rendi országgyűlés 1847 novemberében nyílt meg."},
+ rendidualizmus:{t:"rendi dualizmus",d:"A hatalom megosztása az uralkodó és a rendek (az országgyűlés) között: törvényt csak együtt hozhattak.",n:"Az egész reformkorban ez volt a magyar politikai rendszer kerete."},
+ nador:{t:"nádor",d:"A király magyarországi helyettese, a rendi országgyűlés felsőtáblájának és a Helytartótanácsnak az elnöke.",n:"Az alsótáblán a személynök elnökölt."},
+ reformorszaggyules:{t:"reformországgyűlések",d:"A reformkor kulcs-országgyűlései: 1825–27, 1832–36 (az első reformországgyűlés), 1839–40, 1843–44.",n:"1825–27: Akadémia-alapítás; 1839–40: önkéntes örökváltság; 1843–44: magyar államnyelv."},
+ szavazatszamlalas:{t:"személyenkénti szavazás (1819)",d:"1819-től a vármegyei közgyűlésen a szavazatokat személyenként számolták, nem mérlegelték.",n:"Így minden nemes szava egyenlő lett, ezért érte meg a korteseknek tömegesen mozgósítani a kisnemességet."},
+ vegrehajtas:{t:"a végrehajtás megtagadása",d:"A vármegye önálló jogköre: a törvénytelennek tartott királyi rendeletet nem hajtotta végre. Ide tartozott az adószedés és a bíráskodás is.",n:"Ezért volt a vármegye a királyi hatalom hatékony ellenpólusa."},
+ hitel:{t:"Hitel (1830)",d:"Széchenyi István műve; megjelenése a reformkor kezdete. Az ősiséget és a hitelhiányt nevezi a gazdasági elmaradás okának.",n:"Folytatásai: Világ (1831), Stádium (1833)."},
+ szerves:{t:"szerves fejlődés",d:"Széchenyi reformútja: óvatos, fokozatos átalakulás az arisztokrácia vezetésével, Béccsel egyetértésben.",n:"Kossuth gyorsabb, a nyilvánosságra és a köznemességre építő útjával szemben."},
+ keletnepe:{t:"Kelet Népe (1841)",d:"Széchenyi vitairata Kossuth ellen: szerinte a Pesti Hírlap izgatása forradalomba sodorhatja az országot.",n:"Az 1841-es Széchenyi–Kossuth vita kezdete; a liberális többség Kossuthnak adott igazat."},
+ polgariatalakulas:{t:"polgári átalakulás",d:"A rendi társadalom felváltása jogegyenlőségen, szabad tulajdonon és képviseleten alapuló renddel.",n:"Széchenyi és Kossuth célja azonos volt, eszközük eltérő: lassú vagy gyors reform."},
+ kolera:{t:"kolerafelkelés (1831)",d:"A kolerajárvány idején kitört felvidéki parasztfelkelés; a hatóságokat a kút megmérgezésével vádolták.",n:"Utána a jobbágykérdés a reformpolitika középpontjába került."},
+ tancsics:{t:"Táncsics Mihály",d:"Jobbágyi származású radikális író, a kártalanítás nélküli, azonnali jobbágyfelszabadítás híve.",n:"1847-ben bebörtönözték; 1848. március 15-én szabadította ki a pesti tömeg."},
+ vedegylet:{t:"Védegylet",d:"1844-ben alapított egyesület, tagjai vállalták, hogy csak hazai iparcikket vásárolnak.",n:"Elnöke Batthyány Lajos, igazgatója Kossuth Lajos volt."},
+ allamnyelv:{t:"magyar államnyelv (1844)",d:"Az 1843–44-es országgyűlés a magyart tette a törvényhozás, a hivatalok és az oktatás nyelvévé.",n:"A nyelvi reformmozgalom egyik fő eredménye."},
+ fiatalmo:{t:"Fiatal Magyarország",d:"Radikális fiatal értelmiségiek köre (Petőfi Sándor, Jókai Mór, Vasvári Pál).",n:"Ők lettek a márciusi ifjak 1848-ban."},
+ arisztokracia:{t:"arisztokrácia",d:"A főnemesség (bárók, grófok, hercegek), a felsőtábla tagjai.",n:"Reformpárti arisztokrata volt Széchenyi, Wesselényi és Batthyány Lajos."},
+ kozepbirtokos:{t:"középbirtokos nemesség",d:"A köznemesség birtokosabb rétege: a táblabírók, a megyei politika irányítói.",n:"1815 után eladósodott; a tanult kisnemességgel együtt a reformmozgalom fő hordozója lett."},
+ napoleon:{t:"napóleoni háborúk hatása",d:"1799–1815 között a háborús kereslet miatt jól fizetett a gabona; a béke után az árak zuhantak.",n:"A konjunktúra vége a birtokos nemesség eladósodásához vezetett."},
+ telekaprozodas:{t:"telekaprózódás",d:"Az öröklés során a jobbágytelkek egyre kisebb részekre oszlanak.",n:"Következménye a zsellérek számának növekedése."},
+ zseller:{t:"zsellér",d:"Telek nélküli vagy töredéktelkes falusi lakos, aki főként bérmunkából él.",n:"Számuk a reformkorban gyorsan nőtt."}
+};
+/* A fogalomtár csoportjai a táblakép öt területe szerint */
+const G=[
+ ["a) Széchenyi programja",["hitel","szerves","keletnepe","osiseg","polgariatalakulas"]],
+ ["b) Országgyűlések és vármegyék",["orszaggyules","rendidualizmus","nador","reformorszaggyules","kovetutasitas","kozgyules","szavazatszamlalas","felkialtas","vegrehajtas","adminisztrator","megyekepviselet"]],
+ ["c) A jobbágykérdés",["urberiseg","orokvaltsag","kolera","erdekegyesites","tancsics","haziado"]],
+ ["d) Nagy kérdések, viták, pártok",["kozteher","nepkepviselet","konzervativ","ellenzeki","vedegylet","allamnyelv","pestihirlap","fiatalmo","kortes"]],
+ ["e) Reformkori társadalom",["arisztokracia","kozepbirtokos","bocskoros","adomentesseg","napoleon","telekaprozodas","zseller"]]
+];
+
+/* ---------- Történet ----------
+   m: a döntés indítéka; inf: hatás a többiekre; vote: végső szavazat */
+const M={erdek:"anyagi érdek",elv:"elvhűség",kozosseg:"rendi összetartás",ovatossag:"óvatosság",merlegeles:"mások nézőpontjának mérlegelése"};
+const S={
+ s1:{time:"Este 6",place:"A Korona fogadó",
+  text:"1847 októbere, Nagykálló, Szabolcs vármegye székhelye. Holnap reggel [[vármegyei közgyűlés|kozgyules]] lesz, és te, napkori [[bocskoros nemes|bocskoros]], azért gyalogoltál be, mert a szavazatod ott ér valamit: [[1819 óta személyenként számolják a szavazatokat|szavazatszamlalas]], így a te szavad annyit nyom, mint egy [[középbirtokos|kozepbirtokos]] táblabíróé. A nyáron a megye reformpárti [[követutasítást|kovetutasitas]] adott a pozsonyi [[országgyűlésre|orszaggyules]] induló követeknek: szavazzanak a [[közteherviselés|kozteher]] mellett. A Korona fogadóban egy finom kabátos, ismeretlen úr hosszú asztalt foglalt. „Bort mindenkinek, az én kontómra!” Aztán halkabban: „Holnap ezt az utasítást meg kell változtatni, uraim. Vagy azt akarják, hogy a nemes ember adót fizessen, mint a jobbágy?”",
+  choices:[
+   {t:"Leülsz. A bor ingyen van, és kíváncsi vagy, mit mond az úr.",out:"A bor jó, a hangulat egyre jobb. Az idegen úr minden kisnemest néven szólít. Honnan tudja a neveteket?",next:"s2a",m:"erdek"},
+   {t:"Még nem ülsz le. Megkérdezed: „Ki küldte az urat, és ki fizeti ezt a sok bort?”",out:"Egy pillanatra elhallgat az asztal. Az idegen mosolyog: „Olyanok, akik a nemesi szabadságot féltik. Mint ön is, ugye?”",next:"s2b",m:"merlegeles"}]},
+ s2a:{time:"Este 8",place:"A bor folyik",
+  text:"Már a harmadik kancsó fogy. Az idegen úr szónokol: „A pesti prókátorok, az [[Ellenzéki Nyilatkozat|ellenzeki]] urai el akarják venni a nemes legszentebb jogát, az [[adómentességet|adomentesseg]]! Ma a [[házi adót|haziado]] kérik, holnap a földedet! Gróf Széchenyi, pedig ő is reformer [[arisztokrata|arisztokracia]], maga is óva int Kossuth izgatásától. És minek ingerelni Őfelségét? A [[rendi dualizmus|rendidualizmus]] rendje szerint a király nélkül úgysem lesz semmiből törvény.” Komád, Varga Jancsi az asztalt csapkodja. Az úr ekkor minden pohár mellé tesz egy ezüstforintot: „Útiköltség. Reggel szekér visz mindenkit a vármegyeházára, utána ebéd. Csak kiáltani kell, amikor kell.”",
+  choices:[
+   {t:"Elteszed a forintot. Gyenge volt az aratás, a gyerekeknek csizma kell.",out:"A pénz meleg a zsebedben. Varga Jancsi átkarol: „Így kell ezt, koma! Ne Kossuth mondja meg, mit fizessünk!”",next:"s3a",m:"erdek"},
+   {t:"Visszatolod a forintot az asztalon. A bort megiszod, de a szavazatod nem eladó.",out:"Az idegen úr szeme megvillan, de nem szól. Két asztallal arrébb valaki elismerően biccent: Tóth Mihály, a falutok jegyzője. Int, hogy menj vele.",next:"s3b",m:"elv"}]},
+ s2b:{time:"Este 8",place:"Kérdések a kancsó fölött",
+  text:"Az idegen úr nem mondja ki, de a többiek összesúgnak: az új [[adminisztrátor|adminisztrator]] embere, a [[Konzervatív Párt|konzervativ]] [[kortese|kortes]]. A sarokban Tóth Mihály, a falutok jegyzője a [[Pesti Hírlap|pestihirlap]] egy régi számát lapozza. Odasúgja neked: „Wesselényi báró és Kossuth szerint az [[érdekegyesítés|erdekegyesites]] a nemesség egyetlen esélye: ha önként lemond az előjogairól, a nép vele marad. Igaz, Széchenyi a [[Kelet Népében|keletnepe]] azt írta, hogy ez az izgatás forradalomba visz, és a [[szerves fejlődést|szerves]] tartja járható útnak. A cél, a [[polgári átalakulás|polgariatalakulas]] közös, csak a tempó más. Ormós táblabíró házában ma este erről beszélnek.”",
+  choices:[
+   {t:"Maradsz, és az egész asztal előtt vitába szállsz az idegennel.",out:"„És ha mindent a jobbágy fizet, mi lesz, ha elszegényedik? Ki tart el akkor minket?” Néhányan elgondolkodnak. Az idegen úr gyorsan újratölti a poharakat.",next:"s3a",m:"elv",inf:1},
+   {t:"Elmész a jegyzővel Ormós táblabíró házába, ahol a megye liberálisai gyűlnek.",out:"A táblabíró házában gyertyafény, pipafüst, újságok. Senki nem kínál bort, csak kávét és érveket.",next:"s3b",m:"merlegeles"}]},
+ s3a:{time:"Éjfél",place:"Zűrzavar a Koronában",
+  text:"Éjfélre felforrósodik a fogadó. Varga Jancsi a padra áll: „Nem adózunk! Apám idejében, a [[napóleoni háborúk|napoleon]] alatt még aranyat ért a gabona, most semmit, és még adót is akarnak? Le a pesti prókátorokkal!” Az ajtóban két fiatal jurátus, joggyakornok áll, a [[Fiatal Magyarország|fiatalmo]] lelkes hívei, az [[Ellenzéki Nyilatkozatot|ellenzeki]] osztogatják. Jancsi kezében megemelkedik a kancsó. Az idegen úr hátradől és figyel: ha holnap hangos lesz a terem, a [[felkiáltás|felkialtas]] az ő embereinek kedvez.",
+  choices:[
+   {t:"Te is kiabálsz. Ma este a nemesek összetartanak, bárki ellen.",out:"A jurátusok kimenekülnek, a röplapjaik a sárban. Az asztal ünnepel, te is. Holnap egy hangként fogtok kiáltani.",next:"s4a",m:"kozosseg"},
+   {t:"Megfogod Jancsi karját: „Koma, holnap józanul kell döntenünk. Ülj le.”",out:"Jancsi dühösen néz, aztán leül. Az egyik jurátus a kezedbe nyom egy röplapot: [[népképviselet|nepkepviselet]], [[örökváltság|orokvaltsag]], az [[ősiség|osiseg]] eltörlése. Zsebre teszed.",next:"s4b",m:"ovatossag",inf:1}]},
+ s3b:{time:"Éjfél",place:"Ormós táblabíró háza",
+  text:"Ormós táblabíró kabátja durva hazai posztó: a [[Védegylet|vedegylet]] tagjaként csak hazai iparcikket vásárol. Az [[Ellenzéki Nyilatkozat|ellenzeki]] pontjait olvassa fel: közteherviselés, kötelező [[örökváltság|orokvaltsag]] állami kármentesítéssel, [[népképviselet|nepkepviselet]], az [[ősiség|osiseg]] eltörlése. Aztán rád néz, mert a teremben te vagy az egyetlen bocskoros nemes. „Őszinte leszek. A birtokom [[adósságban úszik|kozepbirtokos]], és az ősiség miatt zálogba sem adhatom; Széchenyi a [[Hitelben|hitel]] pontosan ezt írta le. Nekem a reform hasznot is hoz. Neked áldozat jut: adót fizetsz majd, és a népképviseletben a szavazatod már nem kiváltság. Mi ezt mégis hazafiúi kötelességnek tartjuk. Te mit gondolsz?”",
+  choices:[
+   {t:"„A nemesi jog nem lehet csak annyi, hogy nem fizetek. Vállalom.”",out:"Ormós kezet nyújt. „Holnap ne a kiáltozás döntsön. Beszélj a magadfajtákkal: ha néhány bocskoros nemes átáll, a [[szavazás|felkialtas]] eldőlhet. Mi azt reméljük, egyszer a [[megyei képviseleti rendszer|megyekepviselet]] véget vet a kortesbornak. Hogy az neked jó lesz-e, azt nem merem ígérni.”",next:"s4b",m:"elv",inf:1},
+   {t:"„Önöknek, földbirtokosoknak könnyű lemondani. Nekem a szavazatomon kívül semmim sincs.”",out:"Csend. Aztán Ormós bólint: „Igazad van, ez a mi gyengénk. Erre választ kell adnunk.” Nem győzött meg, de komolyan vett.",next:"s4a",m:"erdek"}]},
+ s4a:{time:"Hajnal",place:"Szekerek a fogadó előtt",
+  text:"Hajnalban szekerek állnak a Korona előtt. Az idegen úr emberei kokárdát és pálinkát osztanak, és felültetik a kisnemeseket. Valaki egy cédulát nyom a kezedbe, rajta egyetlen szó: „Változzék!” Az út szélén egy jobbágy hajtja ökrös szekerét: [[robotra|urberiseg]] megy a földesúr majorjába. Mellette kaszával a fia gyalogol, aki már csak [[zsellér|zseller]]. Rád néznek, és köszönnek.",
+  choices:[
+   {t:"Felülsz a szekérre. Gyalog késő lenne, és a többiek is mind ott ülnek.",out:"A kokárda a melledre kerül. Innen már nehéz lesz másképp kiáltani, mint a szekér többi utasa.",next:"s5a",m:"kozosseg"},
+   {t:"Gyalog indulsz, és szóba elegyedsz a jobbággyal.",out:"„Hogy nekem mi a jó, tekintetes úr? Ha nem kéne heti két napot robotolnom… De engem úgysem kérdez senki a közgyűlésen.” Ezt a mondatot magaddal viszed.",next:"s5b",m:"merlegeles"}]},
+ s4b:{time:"Hajnal",place:"A jobbágy az út szélén",
+  text:"Gyalog indulsz a vármegyeháza felé, a zsebedben a röplap. Egy ökrös szekér mellett jobbágy gyalogol, [[robotra|urberiseg]] megy. Megkérdezed, mit gondol a közteherviselésről. „Hogy mit gondolok, tekintetes úr? Én fizetem a hadiadót, a [[házi adót|haziado]], a kilencedet, és még robotolok is. A telkünk három testvér közt oszlott meg, ez a [[telekaprózódás|telekaprozodas]], a fiam már [[zsellér|zseller]]. Emlékszik a tekintetes úr ’31-re, a [[kolerafelkelésre|kolera]] Zemplénben? Akkor sem kérdeztek minket. Most egy [[Táncsics|tancsics]] nevű ember írását olvasták fel a kocsmában: azt írja, a jobbágyot ingyen kell felszabadítani. Be is zárták érte. Engem a közgyűlésen úgysem kérdez senki.”",
+  choices:[
+   {t:"„Igazad van. Ma ezt is mérlegre teszem.”",out:"A jobbágy meglepődik. „Isten áldja, tekintetes úr.” Úgy érzed, a szavazatod most már nem csak a tiéd.",next:"s5b",m:"merlegeles"},
+   {t:"Nem felelsz. Nemes vagy, ő jobbágy; a rendek ügyei nem rá tartoznak.",out:"A jobbágy lehajtja a fejét és továbbmegy. A rendi társadalom szabályai szerint igazad van. A röplap a zsebedben mást mond.",next:"s5a",m:"kozosseg"}]},
+ s5a:{time:"10 óra",place:"Zsúfolt terem",
+  text:"A vármegyeháza nagyterme dugig van. Ez a közgyűlés tagadta meg a [[végrehajtást|vegrehajtas]], valahányszor törvénytelennek tartott királyi rendelet érkezett; most a kormány saját embere elnököl. A kisnemesek többsége ugyanazt a kokárdát viseli. Az elnöklő [[adminisztrátor|adminisztrator]] felteszi a kérdést: „Kívánják-e a karok és rendek megváltoztatni a [[követutasítást|kovetutasitas]] a közteherviselés ügyében?” A teremben hangzavar: „Nem adózunk! Változzék!” A reformpártiak tiltakoznak, de a hangjuk elvész. A [[felkiáltás|felkialtas]] eldőlni látszik.",
+  choices:[
+   {t:"Te is kiáltasz. Végül is ezért hoztak ide.",out:"A hangod beleolvad a tömegbe. Senki nem fogja tudni, mit gondoltál valójában. Talán te sem. Az ellenzék padsorából viszont kétségbe vonják a felkiáltás eredményét, és [[szavazást|felkialtas]] követelnek.",next:"s6a",m:"kozosseg"},
+   {t:"Hallgatsz, és figyeled, ki kiált valójában, és ki csak tátog.",out:"Észreveszed: sokan csak tátognak, és a kortest lesik. Ormós táblabíró kétségbe vonja a felkiáltás eredményét, és [[szavazást|felkialtas]] kér. Az elnök hosszú vita után elrendeli.",next:"s6b",m:"ovatossag"}]},
+ s5b:{time:"10 óra",place:"Szót kérsz?",
+  text:"A nagyterem zsúfolt, a kokárdás kisnemesek hangosak. Az elnök magyarul nyitja meg az ülést, ahogy az [[1844-es nyelvtörvény|allamnyelv]] óta minden hivatalos irat is magyar. Az elnöklő [[adminisztrátor|adminisztrator]] felkiáltással akar dönteni a [[követutasítás|kovetutasitas]] megváltoztatásáról. Mögötted Varga Jancsi és még néhány napkori bocskoros nemes áll. Ha ők átállnak, az számít: a [[szavazás|felkialtas]] a népesebb tábornak kedvez. A kortes az ajtóból látja, kivel beszélsz.",
+  choices:[
+   {t:"Hátrafordulsz a komádhoz és a többiekhez, és elmondod nekik, amit a jobbágytól és a táblabírótól hallottál.",out:"Jancsi előbb legyint, aztán elgondolkodik. Két szomszédja is figyel. Közben az ellenzék kétségbe vonja a felkiáltás eredményét, és az elnök vita után elrendeli a szavazást. A kortes megjegyezte, kivel beszéltél.",next:"s6b",m:"elv",inf:1},
+   {t:"Nem szólsz senkinek. A szavazásnál úgyis kiderül, mit gondolsz.",out:"Az ellenzékiek kétségbe vonják a felkiáltás eredményét, és szavazást követelnek. Hosszú vita után elrendelik. Te csendben vársz.",next:"s6b",m:"ovatossag"}]},
+ s6a:{time:"Dél",place:"A te neved",
+  text:"Megkezdődik a [[szavazás|felkialtas]]. A megyei jegyző egyenként szólítja a nemeseket, és mindenkinek nyíltan, hangosan kell felelnie: maradjon vagy változzék a [[követutasítás|kovetutasitas]]. A [[kortes|kortes]] az ajtóban áll és jegyzetel. Varga Jancsi előtted felel, gondolkodás nélkül: „Változzék!” Aztán a te neved következik.",
+  choices:[
+   {t:"„Változzék!”",out:"Kimondtad. A kortes elégedetten bólint, és valamit ír a papírjára.",vote:"valt",m:"kozosseg"},
+   {t:"„Maradjon!”",out:"A teremben néhányan feléd fordulnak. A kortes ceruzája megáll. Varga Jancsi döbbenten néz rád.",vote:"marad",m:"elv"}]},
+ s6b:{time:"Dél",place:"A te neved",
+  text:"Megkezdődik a [[szavazás|felkialtas]]. A megyei jegyző egyenként szólítja a nemeseket. Ami tegnap este egyszerűnek tűnt, most nehéz: nyíltan, mindenki előtt kell felelned. A [[kortes|kortes]] az ajtóban áll és jegyzetel, tudni fogja, ki hogyan szavazott. Varga Jancsi előtted habozik, aztán halkan feleli: „Változzék.” Aztán a te neved következik.",
+  choices:[
+   {t:"„Változzék!”",out:"Kimondtad. A kortes bólint. Ormós táblabíró elfordítja a tekintetét.",vote:"valt",m:"erdek"},
+   {t:"„Maradjon!”",out:"Tisztán cseng a hangod. A kortes ceruzája megáll. Mögötted valaki halkan utánad mondja: „Maradjon.”",vote:"marad",m:"elv"}]},
+ endA:{time:"Vég",place:"Az utasítás megváltozott",
+  text:"Néhány szavazattöbbséggel győz a változtatás: Szabolcs követei Pozsonyban a közteherviselés ellen szavaznak majd. Este a Koronában ismét folyik a bor, Varga Jancsi boldog. Te hazafelé gyalogolsz Napkorra, és azon gondolkodsz, mennyit ér egy szavazat, és ki fizeti meg az árát."},
+ endB:{time:"Vég",place:"Az utasítás marad",
+  text:"Néhány szavazaton múlik, de a reformpárti utasítás marad: Szabolcs követei a [[reformországgyűlések|reformorszaggyules]] útját folytatják Pozsonyban, ahol a felsőtáblán a [[nádor|nador]] elnököl. Néhány bocskoros nemes, akivel előző este és reggel beszéltél, a kortes szeme láttára is a megtartásra szavazott. Az idegen úr szó nélkül távozik. Hazafelé Varga Jancsi szótlanul melléd szegődik, aztán egyszer csak megszólal: „Te, koma… a jobbágynak tényleg ennyit kell fizetnie?”"},
+ endC:{time:"Vég",place:"Vesztesen, a saját neveddel",
+  text:"A szavazatszámlálásnál is a kortes emberei győznek, néhány szavazattal: egyedül nem tudtál senkit magad mellé állítani. Az utasítás megváltozik. A jegyzőkönyvben azonban ott áll a neved a „maradjon” oszlopban. Ormós táblabíró megszorítja a kezed: „Ma vesztettünk. De az idő nekünk dolgozik.”"}
+};
+const STOPS=["Este 6","Este 8","Éjfél","Hajnal","10 óra","Dél","Vég"];
+
+/* ---------- Kérdésbank ---------- */
+const Q=[
+ {v:"kovetutasitas",type:"mc",q:"Ki adta ki a követutasítást a reformkorban?",opts:["a vármegyei közgyűlés","a király","a nádor","a Helytartótanács"],a:"a vármegyei közgyűlés",ex:"A követeket és utasításukat a vármegye nemessége a közgyűlésen határozta meg."},
+ {v:"kovetutasitas",type:"mc",q:"Mit jelent, hogy a reformkori követnek kötött mandátuma volt?",opts:["Az utasítás szerint szavazott, és visszahívható volt","Szabadon, lelkiismerete szerint dönthetett","A király nevezte ki","Csak a felsőtáblán szavazhatott"],a:"Az utasítás szerint szavazott, és visszahívható volt",ex:"Ezért volt tétje, ki ül ott a közgyűlésen, amikor az utasítást megváltoztatják."},
+ {v:"kovetutasitas",type:"type",q:"Hogy nevezzük a vármegye írásos utasítását az országgyűlési követeknek? (egy szó)",acc:["követutasítás","követi utasítás"],ex:"követutasítás: a kötött mandátum írásos formája."},
+ {v:"kozgyules",type:"mc",q:"Kik szavazhattak a vármegyei közgyűlésen?",opts:["a megye nemesei, vagyonuktól függetlenül","csak a birtokos nemesek","a nemesek és a polgárok","minden adófizető lakos"],a:"a megye nemesei, vagyonuktól függetlenül",ex:"A legszegényebb nemesnek is ugyanannyit ért a szava, mint a birtokosnak."},
+ {v:"bocskoros",type:"mc",q:"Melyik NEM a szegény kisnemesség elnevezése?",opts:["mágnás","bocskoros nemes","hétszilvafás nemes","kutyabőrös nemes"],a:"mágnás",ex:"A mágnás a főnemesség (bárók, grófok, hercegek) tagja."},
+ {v:"bocskoros",type:"type",q:"Hogy nevezték a saját kezével dolgozó, parasztcipőt viselő szegény kisnemest? (______ nemes)",acc:["bocskoros","bocskoros nemes"],ex:"bocskoros nemes: a lábbelije, a bocskor után."},
+ {v:"kortes",type:"type",q:"Hogy hívták a választási ügynököt, aki étellel, itallal, pénzzel szerzett szavazatokat?",acc:["kortes","korteskedő","kortesvezér"],ex:"kortes: innen ered a kortesvacsora, kortesbeszéd szó is."},
+ {v:"kortes",type:"mc",q:"Miért volt értékes a kortesek számára a szegény kisnemesség?",opts:["Szavazati joga volt, és sokan voltak","Nagy birtokaik voltak","Ők fizették a házi adót","Ők választották a nádort"],a:"Szavazati joga volt, és sokan voltak",ex:"Számuk és szegénységük együtt tette őket mozgósíthatóvá."},
+ {v:"adomentesseg",type:"mc",q:"Mi volt a nemesség legfontosabb anyagi kiváltsága?",opts:["az adómentesség","a robot","a kilenced","a céhtagság"],a:"az adómentesség",ex:"Az adót a nem nemes népesség, főként a jobbágyság fizette."},
+ {v:"adomentesseg",type:"type",q:"A nemesség nem fizetett adót. Mi ennek a kiváltságnak a neve? (egy szó)",acc:["adómentesség","adómentességnek","nemesi adómentesség"],ex:"adómentesség: a közteherviselés ennek felszámolását jelentette."},
+ {v:"kozteher",type:"type",q:"Melyik elv szerint kell minden lakosnak vagyona arányában adót fizetnie? (egy szó)",acc:["közteherviselés","közteherviselésnek"],ex:"közteherviselés: 1848: VIII. tc."},
+ {v:"kozteher",type:"mc",q:"Melyik 1848-as törvénycikk mondta ki a közteherviselést?",opts:["1848: VIII. tc.","1848: III. tc.","1848: V. tc.","1848: XV. tc."],a:"1848: VIII. tc.",ex:"III.: felelős kormány, V.: népképviselet, XV.: az ősiség eltörlése."},
+ {v:"haziado",type:"mc",q:"Mire fordították a házi adót?",opts:["a vármegye működésének költségeire","a hadsereg fenntartására","az egyház javára","a földesúr javára"],a:"a vármegye működésének költségeire",ex:"A hadsereget a hadiadó, az egyházat a tized, a földesurat az úrbéri terhek szolgálták."},
+ {v:"haziado",type:"type",q:"Melyik adó fedezte a vármegye költségeit, és fizette csak az adózó nép? (két szó)",acc:["házi adó","háziadó"],ex:"házi adó: a nemesség részvállalása az 1840-es évek egyik vitakérdése volt."},
+ {v:"adminisztrator",type:"mc",q:"Melyik magyar udvari kancellár nevéhez köthető az adminisztrátori rendszer?",opts:["Apponyi György","Széchenyi István","Batthyány Lajos","Deák Ferenc"],a:"Apponyi György",ex:"Apponyi 1844-től volt kancellár; a rendszert 1845-től vezette be."},
+ {v:"adminisztrator",type:"type",q:"Hogy nevezték a főispán helyett a megyébe küldött kormánytisztviselőt 1845-től? (egy szó)",acc:["adminisztrátor","főispáni helytartó","helytartó"],ex:"adminisztrátor: főispáni helytartó."},
+ {v:"adminisztrator",type:"mc",q:"Miért tartotta sérelmesnek az ellenzék az adminisztrátori rendszert?",opts:["Mert a kormány a megyei önkormányzat befolyásolására használta","Mert csökkentette a jobbágyok terheit","Mert pártatlan volt","Mert a városok követeit erősítette"],a:"Mert a kormány a megyei önkormányzat befolyásolására használta",ex:"A vármegye volt a nemesi ellenállás bázisa; ezt akarta a kormány megtörni."},
+ {v:"konzervativ",type:"mc",q:"Mikor alakult a Konzervatív Párt?",opts:["1846","1832","1848","1825"],a:"1846",ex:"Válaszként a liberális ellenzék erősödésére; az Ellenzéki Párt 1847-ben alakult."},
+ {v:"konzervativ",type:"mc",q:"Mit akart a Konzervatív Párt?",opts:["fokozatos reformot az udvarral egyetértésben","azonnali függetlenséget","kártalanítás nélküli jobbágyfelszabadítást","a rendi országgyűlés megszüntetését"],a:"fokozatos reformot az udvarral egyetértésben",ex:"Nem minden reformot utasított el, de tempóját és módját az udvarhoz igazította."},
+ {v:"ellenzeki",type:"mc",q:"Ki fogalmazta az Ellenzéki Nyilatkozatot (1847)?",opts:["Deák Ferenc","Széchenyi István","Wesselényi Miklós","Kölcsey Ferenc"],a:"Deák Ferenc",ex:"Kölcsey 1838-ban meghalt; Széchenyi nem volt az Ellenzéki Párt tagja."},
+ {v:"ellenzeki",type:"type",q:"Mi volt az 1847-ben alakult Ellenzéki Párt programjának címe? (két szó)",acc:["ellenzéki nyilatkozat","az ellenzéki nyilatkozat"],ex:"Ellenzéki Nyilatkozat, 1847 június."},
+ {v:"ellenzeki",type:"mc",q:"Melyik NEM szerepelt az Ellenzéki Nyilatkozat követelései között?",opts:["a nemesi adómentesség megőrzése","a közteherviselés","a népképviselet","az ősiség eltörlése"],a:"a nemesi adómentesség megőrzése",ex:"Épp ellenkezőleg: a közteherviselés a program része volt."},
+ {v:"orokvaltsag",type:"type",q:"Hogy nevezzük, amikor a jobbágy egyszeri összeggel megváltja magát az úrbéri terhek alól? (egy szó)",acc:["örökváltság"],ex:"örökváltság: 1840-től önkéntes formában lehetséges."},
+ {v:"orokvaltsag",type:"mc",q:"Miben különbözött az ellenzék javaslata az 1840-es önkéntes örökváltságtól?",opts:["Kötelezővé tette volna, állami kármentesítéssel","Megszüntette volna a kármentesítést","Csak a városokra terjesztette volna ki","Semmiben"],a:"Kötelezővé tette volna, állami kármentesítéssel",ex:"Az önkéntes megváltást kevés jobbágy tudta megfizetni."},
+ {v:"nepkepviselet",type:"mc",q:"Miért félhetett egy bocskoros nemes a népképviselettől?",opts:["Mert szavazata már nem lett volna rendi kiváltság","Mert elveszítette volna a birtokát","Mert robotolnia kellett volna","Mert a király választotta volna a követeket"],a:"Mert szavazata már nem lett volna rendi kiváltság",ex:"A választójog vagyonhoz vagy műveltséghez kötődött volna, nem a születéshez."},
+ {v:"nepkepviselet",type:"type",q:"Melyik elv szerint választják az országgyűlést a rendek helyett a választójogot kapó polgárok? (egy szó)",acc:["népképviselet","népképviseleti"],ex:"népképviselet: 1848: V. tc."},
+ {v:"nepkepviselet",type:"mc",q:"Mit mondott ki az 1848: V. tc. azokról, akiknek korábban volt szavazati joguk?",opts:["Megtartották (régi jogon)","Elveszítették","Csak adófizetés után kapták vissza","Csak a felsőtáblára szavazhattak"],a:"Megtartották (régi jogon)",ex:"Így a szegény kisnemesek sem veszítették el a választójogukat."},
+ {v:"osiseg",type:"mc",q:"Mióta volt érvényben az ősiség?",opts:["1351","1222","1514","1608"],a:"1351",ex:"Nagy Lajos törvénye; 1848-ban a XV. tc. törölte el."},
+ {v:"osiseg",type:"type",q:"Melyik elv tiltotta a nemesi birtok végleges eladását? (egy szó)",acc:["ősiség","az ősiség","ősiségi törvény"],ex:"ősiség: ezért nem lehetett a birtokot hitel fedezetéül adni."},
+ {v:"osiseg",type:"mc",q:"Melyik művében bírálta Széchenyi az ősiséget mint a hitel akadályát?",opts:["Hitel","Világ","Stádium","A Kelet népe"],a:"Hitel",ex:"Hitel, 1830; a Világ (1831) és a Stádium (1833) ennek folytatásai."},
+ {v:"erdekegyesites",type:"type",q:"Hogy nevezte Kossuth azt az elvet, hogy a nemesség önként mondjon le kiváltságairól a néppel közös érdek nevében? (egy szó)",acc:["érdekegyesítés"],ex:"érdekegyesítés: a jobbágyság nemzetbe emelésének programja."},
+ {v:"erdekegyesites",type:"mc",q:"Mit jelent Kossuth érdekegyesítési politikája?",opts:["A nemesség lemond előjogairól, és a népet a nemzetbe emeli","A nemesség és a király szövetkezik a nép ellen","A vármegyék egyesülnek","A magyar és az osztrák vámterület egyesül"],a:"A nemesség lemond előjogairól, és a népet a nemzetbe emeli",ex:"A cél az volt, hogy a jobbágy is érdekelt legyen a nemzet ügyében."},
+ {v:"pestihirlap",type:"mc",q:"Ki szerkesztette a Pesti Hírlapot 1841-től?",opts:["Kossuth Lajos","Széchenyi István","Deák Ferenc","Eötvös József"],a:"Kossuth Lajos",ex:"Kossuth 1844-ig szerkesztette; vezércikkei országos hatásúak voltak."},
+ {v:"pestihirlap",type:"type",q:"Melyik lapot szerkesztette Kossuth 1841-től? (két szó)",acc:["pesti hírlap","a pesti hírlap"],ex:"Pesti Hírlap."},
+ {v:"felkialtas",type:"mc",q:"Kinek kedvezett a felkiáltásos döntés?",opts:["a hangosabb, népesebb tábornak","a gazdagabb nemeseknek","a városi polgároknak","a jobbágyoknak"],a:"a hangosabb, népesebb tábornak",ex:"Ezért érte meg a korteseknek tömegesen mozgósítani a kisnemeseket."},
+ {v:"felkialtas",type:"type",q:"Hogyan döntött a vármegyei közgyűlés rendszerint a vitás ügyekben, amíg szavazást nem kértek? (egy szó)",acc:["felkiáltással","felkiáltás","felkiáltásos"],ex:"felkiáltással: az elnök a kiáltások alapján állapította meg a többséget."},
+ {v:"felkialtas",type:"mc",q:"Miért volt kockázatos a szegény kisnemesnek a vármegyei szavazás?",opts:["Mert nyílt volt, így a kortes láthatta, ki hogyan szavaz","Mert titkos volt, és nem lehetett ellenőrizni","Mert csak a birtokosok szavazhattak","Mert az eredményt a király hagyta jóvá"],a:"Mert nyílt volt, így a kortes láthatta, ki hogyan szavaz",ex:"A titkos szavazás a rendi vármegyében ismeretlen volt."},
+ {v:"megyekepviselet",type:"mc",q:"Mit javasoltak a liberálisok a kisnemesi tömegek és a kortesvilág befolyásának visszaszorítására a vármegyében?",opts:["a megyei képviseleti rendszert","a szavazás eltörlését","a jobbágyok bevonását a közgyűlésbe","a közgyűlések évenkénti egyszeri megtartását"],a:"a megyei képviseleti rendszert",ex:"A közgyűlés helyett választott képviselők döntöttek volna."},
+ {v:"megyekepviselet",type:"type",q:"Hogyan nevezték azt a javaslatot, hogy a közgyűlés helyett választott testület döntsön a megyében? (megyei ______ rendszer)",acc:["képviseleti","képviseleti rendszer","megyei képviseleti rendszer"],ex:"megyei képviseleti rendszer: a centralisták határozottan támogatták."},
+ {v:"urberiseg",type:"mc",q:"Melyik NEM úrbéri szolgáltatás?",opts:["hadiadó","robot","kilenced","füstpénz"],a:"hadiadó",ex:"A hadiadó állami adó volt, nem a földesúrnak járt."},
+ {v:"urberiseg",type:"type",q:"Hogy hívták a jobbágy ingyenmunkáját a földesúr majorságában? (egy szó)",acc:["robot"],ex:"robot: egész telkes jobbágynál évi 52 nap igás vagy 104 nap kézi robot."},
+ {v:"orszaggyules",type:"mc",q:"Hol ülésezett a rendi országgyűlés 1847-ben?",opts:["Pozsony","Pest","Buda","Bécs"],a:"Pozsony",ex:"A rendi országgyűlések színhelye Pozsony volt; 1848 júliusától Pesten ült össze a népképviseleti országgyűlés."},
+ {v:"orszaggyules",type:"type",q:"Melyik városban nyílt meg 1847 novemberében az utolsó rendi országgyűlés?",acc:["pozsony","pozsonyban"],ex:"Pozsony."},
+ {v:"kovetutasitas",type:"mc",q:"Melyik megye követe volt Kölcsey Ferenc?",opts:["Szatmár","Zala","Pest","Szabolcs"],a:"Szatmár",ex:"Deák Ferenc Zala, Kossuth 1847-ben Pest megye követe volt."},
+ {v:"ellenzeki",type:"mc",q:"Ki volt az Ellenzéki Párt elnöke?",opts:["Batthyány Lajos","Deák Ferenc","Kossuth Lajos","Széchenyi István"],a:"Batthyány Lajos",ex:"Batthyány a reformpárti arisztokraták közé tartozott; a Nyilatkozatot Deák fogalmazta."},
+ {v:"erdekegyesites",type:"mc",q:"A táblakép szerint melyik reformer nevéhez fűződik (Kossuth mellett) az érdekegyesítés elve?",opts:["Wesselényi Miklós","Széchenyi István","Dessewffy Emil","Apponyi György"],a:"Wesselényi Miklós",ex:"Wesselényi a Balítéletekről című művében is a nemesség és a nép érdekének egyesítését sürgette."},
+ {v:"orokvaltsag",type:"mc",q:"Melyik országgyűlés iktatta törvénybe az önkéntes örökváltságot?",opts:["1839–40","1825–27","1832–36","1843–44"],a:"1839–40",ex:"1832–36-ban még elutasították; 1848-ig a jobbágyok kb. 1%-a váltotta meg magát."},
+ {v:"orokvaltsag",type:"mc",q:"A jobbágyok nagyjából hány százaléka váltotta meg magát 1848-ig az önkéntes örökváltsággal?",opts:["kb. 1%","kb. 10%","kb. 25%","kb. 50%"],a:"kb. 1%",ex:"Ezért követelte Kossuth a kötelező, állami kártalanítással járó örökváltságot."},
+ {v:"rendidualizmus",type:"mc",q:"Mit jelent a rendi dualizmus?",opts:["A hatalom megosztása az uralkodó és a rendek között","Két uralkodó egyidejű hatalma","Ausztria és Magyarország közös kormánya","A felső- és az alsótábla vitája"],a:"A hatalom megosztása az uralkodó és a rendek között",ex:"Törvényt csak a király és az országgyűlés együtt hozhatott."},
+ {v:"rendidualizmus",type:"type",q:"Hogy nevezzük a hatalom uralkodó és rendek közötti megosztását? (két szó)",acc:["rendi dualizmus"],ex:"rendi dualizmus."},
+ {v:"nador",type:"mc",q:"Ki elnökölt a rendi országgyűlés felsőtábláján?",opts:["a nádor","a személynök","a kancellár","az alispán"],a:"a nádor",ex:"Az alsótáblán a személynök elnökölt."},
+ {v:"nador",type:"type",q:"Hogy hívták a király magyarországi helyettesét, a felsőtábla elnökét? (egy szó)",acc:["nádor"],ex:"nádor."},
+ {v:"reformorszaggyules",type:"mc",q:"Melyik országgyűlést tekintjük az első reformországgyűlésnek?",opts:["1832–36","1825–27","1839–40","1847–48"],a:"1832–36",ex:"1825–27 a nyitány volt (Akadémia), de a reformkérdések 1832–36-ban kerültek napirendre."},
+ {v:"reformorszaggyules",type:"mc",q:"Melyik országgyűléshez köthető az Akadémia alapítása?",opts:["1825–27","1832–36","1839–40","1843–44"],a:"1825–27",ex:"Széchenyi itt ajánlotta fel birtokai egyévi jövedelmét."},
+ {v:"szavazatszamlalas",type:"mc",q:"Mi változott 1819-től a vármegyei közgyűlésen?",opts:["A szavazatokat személyenként számolták","Bevezették a titkos szavazást","A jobbágyok is szavazhattak","Megszűntek a közgyűlések"],a:"A szavazatokat személyenként számolták",ex:"Ettől kezdve a szegény kisnemes szava ugyanannyit ért, mint a birtokosé."},
+ {v:"szavazatszamlalas",type:"type",q:"Melyik évtől számolták személyenként a szavazatokat a vármegyei közgyűlésen?",acc:["1819"],ex:"1819."},
+ {v:"vegrehajtas",type:"mc",q:"Melyik NEM tartozott a vármegye önálló jogkörei közé?",opts:["a törvényhozás","az adószedés","a bíráskodás","a törvénytelen rendelet végrehajtásának megtagadása"],a:"a törvényhozás",ex:"Törvényt az uralkodó és az országgyűlés hozott."},
+ {v:"vegrehajtas",type:"type",q:"Mit tagadhatott meg a vármegye a törvénytelennek tartott királyi rendelettel szemben? (egy szó)",acc:["végrehajtás","végrehajtást","a végrehajtást"],ex:"a végrehajtást."},
+ {v:"hitel",type:"mc",q:"Melyik mű megjelenését tekintjük a reformkor kezdetének?",opts:["Széchenyi: Hitel (1830)","Kossuth: Pesti Hírlap (1841)","Széchenyi: Kelet Népe (1841)","Ellenzéki Nyilatkozat (1847)"],a:"Széchenyi: Hitel (1830)",ex:"Folytatásai a Világ (1831) és a Stádium (1833)."},
+ {v:"hitel",type:"type",q:"Melyik Széchenyi-mű jelent meg 1833-ban, a reformok tizenkét pontjával? (egy szó)",acc:["stádium"],ex:"Stádium (1833)."},
+ {v:"szerves",type:"mc",q:"Mit jelent Széchenyi „szerves fejlődés” elve?",opts:["Fokozatos reform az arisztokrácia vezetésével, Béccsel egyetértésben","Gyors, radikális átalakulás","Forradalom a Habsburgok ellen","A nép vezette reform"],a:"Fokozatos reform az arisztokrácia vezetésével, Béccsel egyetértésben",ex:"Ezért került szembe Kossuth gyorsabb, nyilvánosságra építő politikájával."},
+ {v:"szerves",type:"type",q:"Hogy nevezzük Széchenyi fokozatos, a meglévő intézményekre építő reformútját? (két szó)",acc:["szerves fejlődés"],ex:"szerves fejlődés."},
+ {v:"keletnepe",type:"mc",q:"Melyik művében támadta Széchenyi 1841-ben Kossuth politikáját?",opts:["Kelet Népe","Hitel","Stádium","Világ"],a:"Kelet Népe",ex:"A Kelet Népe nyitotta meg a Széchenyi–Kossuth vitát."},
+ {v:"keletnepe",type:"type",q:"Mi a címe Széchenyi 1841-es, Kossuth ellen írt vitairatának? (két szó)",acc:["kelet népe","a kelet népe"],ex:"A Kelet Népe."},
+ {v:"polgariatalakulas",type:"mc",q:"Miben értett egyet Széchenyi és Kossuth?",opts:["a célban: a polgári átalakulásban","a reform tempójában","a nyilvánosság szerepében","a Béccsel való viszonyban"],a:"a célban: a polgári átalakulásban",ex:"Az eszközökben tértek el: lassú vagy gyors reform."},
+ {v:"polgariatalakulas",type:"type",q:"Mi volt Széchenyi és Kossuth közös célja? (______ átalakulás)",acc:["polgári","polgári átalakulás"],ex:"polgári átalakulás."},
+ {v:"kolera",type:"mc",q:"Mi irányította a figyelmet 1831-ben a jobbágykérdésre?",opts:["a kolerafelkelés","a Védegylet","a Lánchíd építése","a nyelvtörvény"],a:"a kolerafelkelés",ex:"A felvidéki parasztfelkelés megmutatta a feszültség mélységét."},
+ {v:"kolera",type:"type",q:"Melyik járvány idején tört ki 1831-ben a felvidéki parasztfelkelés?",acc:["kolera","kolerajárvány","a kolera"],ex:"kolera."},
+ {v:"tancsics",type:"mc",q:"Ki képviselte a reformkorban a kártalanítás nélküli, azonnali jobbágyfelszabadítás gondolatát?",opts:["Táncsics Mihály","Széchenyi István","Dessewffy Emil","Apponyi György"],a:"Táncsics Mihály",ex:"Táncsics jobbágyi származású volt; 1848. március 15-én szabadították ki a börtönből."},
+ {v:"tancsics",type:"type",q:"Melyik jobbágyi származású radikális írót szabadította ki a pesti tömeg 1848. március 15-én? (vezetéknév)",acc:["táncsics","táncsics mihály"],ex:"Táncsics Mihály."},
+ {v:"vedegylet",type:"mc",q:"Mi volt a Védegylet célja?",opts:["A hazai ipar támogatása a magyar termékek vásárlásával","A nemesi adómentesség védelme","Bécs vámpolitikájának támogatása","A jobbágyok fegyveres védelme"],a:"A hazai ipar támogatása a magyar termékek vásárlásával",ex:"Válasz a hazai ipart sújtó vámpolitikára."},
+ {v:"vedegylet",type:"type",q:"Melyik 1844-ben alapított egyesület tagjai fogadták meg, hogy csak hazai iparcikket vásárolnak? (egy szó)",acc:["védegylet"],ex:"Védegylet."},
+ {v:"allamnyelv",type:"mc",q:"Melyik évben lett a magyar az államnyelv?",opts:["1844","1836","1848","1830"],a:"1844",ex:"Az 1843–44-es országgyűlés döntése."},
+ {v:"allamnyelv",type:"type",q:"Melyik évben lett törvény szerint a magyar az államnyelv?",acc:["1844"],ex:"1844."},
+ {v:"fiatalmo",type:"mc",q:"Kik tartoztak a Fiatal Magyarország köréhez?",opts:["Petőfi, Jókai, Vasvári","Széchenyi, Dessewffy, Apponyi","Kölcsey, Wesselényi, Deák","Batthyány, Eötvös, Szalay"],a:"Petőfi, Jókai, Vasvári",ex:"Ők lettek 1848-ban a márciusi ifjak."},
+ {v:"fiatalmo",type:"type",q:"Hogy nevezték a Petőfi, Jókai és Vasvári köré csoportosuló radikális fiatalokat? (két szó)",acc:["fiatal magyarország"],ex:"Fiatal Magyarország."},
+ {v:"arisztokracia",type:"mc",q:"Ki NEM volt reformpárti arisztokrata?",opts:["Kossuth Lajos","Széchenyi István","Wesselényi Miklós","Batthyány Lajos"],a:"Kossuth Lajos",ex:"Kossuth kisnemesi családból származott."},
+ {v:"arisztokracia",type:"type",q:"Hogy nevezzük a főnemességet, a bárók és grófok rétegét? (egy szó)",acc:["arisztokrácia","mágnások","főnemesség"],ex:"arisztokrácia."},
+ {v:"kozepbirtokos",type:"mc",q:"Melyik réteg vált a reformmozgalom fő hordozójává?",opts:["a középbirtokos nemesség és a tanult kisnemesség","az arisztokrácia","a jobbágyság","a városi polgárság"],a:"a középbirtokos nemesség és a tanult kisnemesség",ex:"A polgárság gyenge volt; Kossuth maga is kisnemes."},
+ {v:"kozepbirtokos",type:"mc",q:"Mi sújtotta 1815 után a középbirtokos nemességet?",opts:["az eladósodás","a jobbágyfelszabadítás","a közteherviselés","a népképviselet"],a:"az eladósodás",ex:"A gabonakonjunktúra vége és az ősiség miatti hitelhiány együtt okozta."},
+ {v:"kozepbirtokos",type:"type",q:"Melyik nemesi réteg adta a táblabírókat és a megyei politika vezetőit? (______ nemesség)",acc:["középbirtokos","középbirtokos nemesség"],ex:"középbirtokos nemesség."},
+ {v:"napoleon",type:"mc",q:"Milyen hatással volt a napóleoni háborúk vége (1815) a magyar birtokosokra?",opts:["A gabonakonjunktúra véget ért, sokan eladósodtak","Fellendült a gyáripar","Megszűnt a jobbágyság","Csökkentek az adók"],a:"A gabonakonjunktúra véget ért, sokan eladósodtak",ex:"A háborús kereslet megszűnésével zuhantak a gabonaárak."},
+ {v:"telekaprozodas",type:"mc",q:"Mi lett a telekaprózódás következménye?",opts:["Nőtt a zsellérek száma","Csökkent a népesség","Megszűnt a robot","Nőttek a jobbágytelkek"],a:"Nőtt a zsellérek száma",ex:"A kisebb telek nem tartott el egy családot."},
+ {v:"telekaprozodas",type:"type",q:"Hogy nevezzük, amikor öröklés során a jobbágytelkek egyre kisebb részekre oszlanak? (egy szó)",acc:["telekaprózódás"],ex:"telekaprózódás."},
+ {v:"zseller",type:"mc",q:"Ki volt a zsellér?",opts:["Telek nélküli vagy töredéktelkes, főként bérmunkából élő falusi lakos","Egész telkes jobbágy","Városi kereskedő","Szegény nemes"],a:"Telek nélküli vagy töredéktelkes, főként bérmunkából élő falusi lakos",ex:"A reformkorban a zsellérek száma gyorsan nőtt."},
+ {v:"zseller",type:"type",q:"Hogy hívták a telek nélküli, bérmunkából élő falusi réteget? (egy szó)",acc:["zsellér","zsellérek"],ex:"zsellér."}
+];
+
+/* ---------- Állapot ---------- */
+let st;
+function fresh(){return{scene:"s1",phase:"start",score:0,max:0,inf:0,vote:null,motives:{},testedV:[],usedQ:[],path:[],quiz:null,refl:null,name:""}}
+st=(window.claude&&window.claude.hot&&window.claude.hot.data&&window.claude.hot.data.st)||fresh();
+try{window.claude?.hot?.snapshot?.(()=>({st}))}catch(e){}
+
+const $=s=>document.querySelector(s);
+const app=$("#app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mark=t=>esc(t).replace(/\[\[(.+?)\|(\w+)\]\]/g,(m,txt,id)=>`<button type="button" class="v" data-v="${id}">${txt}</button>`);
+const tags=t=>[...(t||"").matchAll(/\|(\w+)\]\]/g)].map(m=>m[1]);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fold=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const norm=s=>fold(s.trim()).replace(/\s+/g," ").replace(/[.!?,;:]+$/,"");
+const smooth=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
+
+function setScore(){$("#score").textContent=`${st.score} pont`}
+function drawClock(){
+  const c=$("#clock");
+  if(st.phase==="start"){c.hidden=true;return}
+  c.hidden=false;
+  const cur=st.phase==="refl"||st.phase==="done"?STOPS.length-1:STOPS.indexOf(S[st.scene].time);
+  c.innerHTML=STOPS.map((t,i)=>`<div class="stop ${i<cur?"done":i===cur?"now":""}"><i></i>${t}</div>`).join("");
+}
+
+function pickQuiz(vlist){
+  const isFresh=v=>!st.testedV.includes(v);
+  const cand=Q.map((q,i)=>({...q,i})).filter(q=>!st.usedQ.includes(q.i));
+  const pref=[...new Set(vlist)];
+  const sc=q=>(pref.includes(q.v)?2:0)+(isFresh(q.v)?3:0)+Math.random();
+  const typed=cand.filter(q=>q.type==="type").sort((a,b)=>sc(b)-sc(a))[0];
+  const mc=cand.filter(q=>q.type==="mc"&&(!typed||q.v!==typed.v)).sort((a,b)=>sc(b)-sc(a))[0];
+  const out=[mc,typed].filter(Boolean);
+  out.forEach(q=>{st.usedQ.push(q.i);if(!st.testedV.includes(q.v))st.testedV.push(q.v)});
+  return out.map(q=>({...q,opts:q.opts?shuffle(q.opts):null,pts:q.type==="type"?2:1,done:false,got:0,given:null}));
+}
+
+function render(){
+  setScore();drawClock();
+  if(st.phase==="start")return renderStart();
+  if(st.phase==="refl")return renderRefl();
+  if(st.phase==="done")return renderDone();
+  renderScene();
+}
+
+function renderStart(){
+  app.innerHTML=`
+  <section class="card start fade" style="display:flex;flex-direction:column;gap:16px">
+    <div class="seal" aria-hidden="true"><span>Szabolcs<b>1847</b>vármegye</span></div>
+    <div class="meta">Döntési kalandjáték · Reformkor</div>
+    <h1>A kortes bora</h1>
+    <p class="lead">Szabolcs vármegyei kisnemes vagy. A közgyűlés előtti estén egy ismeretlen úr téged és a többi kisnemest arra akar rávenni, hogy változtassátok meg a megye reformpárti követutasítását. Sok jó bort rendelt, hogy jó legyen a hangulat. Hat döntés vár rád estétől délig: cselekszel-e, miért, és hogyan?</p>
+    <div class="cast">
+      <div class="who"><b>Te</b>napkori bocskoros nemes, pár hold földdel</div>
+      <div class="who"><b>Az idegen úr</b>finom kabát, bőkezű kontó</div>
+      <div class="who"><b>Varga Jancsi</b>a komád, szereti a bort</div>
+      <div class="who"><b>Tóth Mihály</b>falusi jegyző, újságolvasó</div>
+      <div class="who"><b>Ormós táblabíró</b>a megyei liberálisok egyike</div>
+      <div class="who"><b>Egy jobbágy</b>akit a közgyűlésen senki nem kérdez</div>
+    </div>
+    <ul class="rules">
+      <li>Minden döntés után két rövid kérdés: választós 1 pont, beírós 2 pont. Rossz válasz után is továbbléphetsz.</li>
+      <li>A <span class="v" style="cursor:default">kiemelt fogalmakra</span> koppintva látod a jelentésüket. A Fogalomtár a reformkor táblakép öt területe szerint rendezi őket.</li>
+      <li>A döntéseid alakítják a történetet és a vármegye szavazását. Nincs „jó” út, de minden döntésnek ára van.</li>
+      <li>A végén néhány mondatban megindokolod a döntésedet. Erre is pont jár.</li>
+    </ul>
+    <p style="color:var(--muted);font-size:.92rem">A szereplők kitaláltak, a helyzet a reformkori vármegyei politika valós mintáit követi.</p>
+    <div><button class="btn big wine" id="go" type="button">Belépek a Koronába</button></div>
+  </section>`;
+  $("#go").onclick=()=>{st.phase="scene";render();window.scrollTo(0,0)};
+}
+
+function endingFor(){
+  if(st.vote==="valt")return"endA";
+  return st.inf>=2?"endB":"endC";
+}
+
+function renderScene(){
+  const sc=S[st.scene];
+  if(st.scene.startsWith("end")){
+    app.innerHTML=`<section class="card fade story"><div><div class="meta">${sc.time} · A vármegye döntött</div><h2>${sc.place}</h2></div><p class="lede">${mark(sc.text)}</p>
+    <div class="row"><button class="btn big wine" id="toRefl" type="button">Tovább az indokláshoz</button></div></section>
+    ${historyCard()}`;
+    $("#toRefl").onclick=()=>{st.phase="refl";render();window.scrollTo(0,0)};
+    return;
+  }
+  const picked=st.quiz?st.quiz.choice:null;
+  let h=`<section class="card fade story"><div><div class="meta">${sc.time} · ${st.path.length+1}. döntés a hatból</div><h2>${sc.place}</h2></div><p class="lede">${mark(sc.text)}</p></section>
+  <div class="choices">${sc.choices.map((c,i)=>`<button type="button" class="choice ${picked===i?"picked":picked!=null?"faded":""}" data-c="${i}" ${picked!=null?"disabled":""}><span class="k">${"AB"[i]}</span><span>${mark(c.t)}</span></button>`).join("")}</div>`;
+  if(st.quiz){
+    const c=sc.choices[picked];
+    const done=st.quiz.items.every(q=>q.done);
+    h+=`<p class="outcome fade">${mark(c.out)}</p>
+    <section class="quiz fade"><h3>Fogalmi próba</h3>${st.quiz.items.map(renderQ).join("")}
+    <div class="row"><button class="btn big" id="next" type="button" ${done?"":"disabled"}>${c.vote?"Lássuk az eredményt":"Tovább"}</button><span class="hint">${done?"":"Válaszolj mindkét kérdésre; rossz válasz után is mehetsz tovább."}</span></div></section>`;
+  }
+  app.innerHTML=h;
+  app.querySelectorAll(".choice").forEach(b=>b.onclick=e=>{
+    if(e.target.closest(".v"))return;
+    const i=+b.dataset.c, c=sc.choices[i];
+    st.path.push(`${sc.time} – ${sc.place}: ${"AB"[i]} (${M[c.m]})`);
+    st.motives[c.m]=(st.motives[c.m]||0)+1;
+    if(c.inf)st.inf+=c.inf;
+    if(c.vote)st.vote=c.vote;
+    st.quiz={choice:i,items:pickQuiz([...tags(sc.text),...tags(c.t),...tags(c.out)])};
+    st.quiz.items.forEach(q=>st.max+=q.pts);
+    render();
+    requestAnimationFrame(()=>$(".outcome")?.scrollIntoView({behavior:smooth(),block:"start"}));
+  });
+  bindQuiz();
+  const n=$("#next");
+  if(n)n.onclick=()=>{const c=sc.choices[st.quiz.choice];st.scene=c.vote?endingFor():c.next;st.quiz=null;render();window.scrollTo(0,0)};
+}
+
+function renderQ(q,k){
+  const head=`<div class="prompt">${esc(q.q)}<span class="pts">${q.pts} p.</span></div>`;
+  let body;
+  if(q.type==="mc"){
+    body=`<div class="opts">${q.opts.map(o=>{let cls="";if(q.done){if(o===q.a)cls="ok";else if(o===q.given)cls="no"}return`<button type="button" class="opt ${cls}" data-q="${k}" data-o="${esc(o)}" ${q.done?"disabled":""}>${esc(o)}</button>`}).join("")}</div>`;
+  }else{
+    body=`<div class="typerow"><input id="in${k}" data-q="${k}" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Írd be a választ" value="${q.given!=null?esc(q.given):""}" ${q.done?"disabled":""}><button type="button" class="btn" data-check="${k}" ${q.done?"disabled":""}>Ellenőrzés</button></div>`;
+  }
+  const fb=q.done?`<div class="fb ${q.got?"ok":"no"}">${q.got?`Helyes, +${q.got}.`:`Nem talált. Helyesen: <b>${esc(q.a||q.acc[0])}</b>.`} ${esc(q.ex)}</div>`:"";
+  return `<div class="q">${head}${body}${fb}</div>`;
+}
+function answer(k,val){
+  const q=st.quiz.items[k]; if(q.done)return;
+  q.given=val; q.done=true;
+  const ok=q.type==="mc"?val===q.a:q.acc.map(norm).includes(norm(val));
+  q.got=ok?q.pts:0; st.score+=q.got;
+  render();
+  requestAnimationFrame(()=>document.querySelectorAll(".q")[k]?.scrollIntoView({block:"nearest"}));
+}
+function bindQuiz(){
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.q,b.dataset.o));
+  app.querySelectorAll("[data-check]").forEach(b=>b.onclick=()=>{const k=+b.dataset.check,v=$("#in"+k).value;if(v.trim())answer(k,v)});
+  app.querySelectorAll(".typerow input").forEach(i=>i.onkeydown=e=>{if(e.key==="Enter"&&i.value.trim())answer(+i.dataset.q,i.value)});
+}
+
+function historyCard(){
+  return `<section class="card history fade">
+    <div class="meta">Mi történt valójában?</div>
+    <h2 style="font-size:1.4rem">A történet és a történelem</h2>
+    <ul>
+      <li>1819-től a vármegyei közgyűlésen személyenként számolták a szavazatokat. A sok, szegény kisnemes szavazata így döntővé vált, és ez a reformkor végére a kormánypárt eszközévé lett.</li>
+      <li>A kormány 1845-től adminisztrátorokat küldött a megyékbe, hogy kormánypárti többséget szervezzenek. A kortesek étellel, itallal, pénzzel mozgósították a sok szavazattal bíró szegény kisnemességet. A felkiáltás a hangosabb, a szavazatszámlálás a népesebb tábornak kedvezett, és mivel a szavazás nyílt volt, a kortes ellenőrizhette, ki hogyan szavaz.</li>
+      <li>A liberálisok egy része, különösen a centralisták, ezért a megyei képviseleti rendszert sürgette: a közgyűlés helyett választott testület döntsön. Ez a reformkorban nem valósult meg.</li>
+      <li>1847 novemberében megnyílt az utolsó rendi országgyűlés Pozsonyban; Pest megye egyik követe Kossuth Lajos volt.</li>
+      <li>1848 áprilisában az uralkodó szentesítette az áprilisi törvényeket: közteherviselés (VIII. tc.), az úrbéri terhek megszüntetése állami kármentesítéssel (IX. tc.), az ősiség eltörlése (XV. tc.), népképviselet (V. tc.).</li>
+      <li>A bocskoros nemesek félelme a választójoguk elvesztésétől végül nem igazolódott: az 1848: V. tc. szerint aki addig szavazhatott, megtartotta jogát („régi jogon”). Az adómentesség viszont megszűnt.</li>
+    </ul>
+  </section>`;
+}
+
+/* ---------- Indoklás ---------- */
+const RX={
+ kovetutasitas:/utasitas/,kozgyules:/kozgyules/,bocskoros:/bocskor|kisnemes|hetszilvas|kutyabor/,kortes:/kortes/,
+ adomentesseg:/adomentes|adot? ?fizet|kivaltsag|eloj/,kozteher:/kozteher/,haziado:/hazi ?ado/,adminisztrator:/adminisztrator/,
+ konzervativ:/konzervativ/,ellenzeki:/ellenzek/,orokvaltsag:/orokvaltsag/,nepkepviselet:/nepkepvisel/,osiseg:/osiseg/,
+ erdekegyesites:/erdekegyesit/,pestihirlap:/pesti hirlap/,felkialtas:/felkialt|voksol|nyilt szavaz/,rendidualizmus:/dualizmus/,nador:/nador/,reformorszaggyules:/reformorszaggyules/,szavazatszamlalas:/1819|szemelyenkent/,vegrehajtas:/vegrehajtas/,hitel:/\bhitel/,szerves:/szerves fejlod/,keletnepe:/kelet nep/,polgariatalakulas:/polgari atalakul/,kolera:/kolera/,tancsics:/tancsics/,vedegylet:/vedegylet/,allamnyelv:/allamnyelv|1844/,fiatalmo:/fiatal magyarorszag/,arisztokracia:/arisztokra|fonemes|magnas/,kozepbirtokos:/kozepbirtok|eladosod/,napoleon:/napoleon/,telekaprozodas:/telekaproz/,zseller:/zseller/,megyekepviselet:/kepviseleti rendszer|megyei kepvisel/,urberiseg:/urber|robot|kilenced/,orszaggyules:/orszaggyules|pozsony/
+};
+const PERSP=/jancsi|varga|jobbagy|ormos|tablabiro|idegen|kortes|jegyzo|toth|liberalis|konzervativ|reformpart|kisnemes/;
+const CAUSE=/\b(mert|ezert|hiszen|mivel|ugyanis|azert|emiatt|igy)\b/;
+function scoreRefl(raw){
+  const t=fold(raw);
+  const found=Object.keys(RX).filter(k=>RX[k].test(t));
+  const words=raw.trim().split(/\s+/).filter(Boolean).length;
+  const sents=(raw.match(/[.!?]+(\s|$)/g)||[]).length;
+  let p=0,notes=[];
+  if(found.length>=2){p+=4;notes.push("legalább két fogalom a játékból (+4)")}
+  else if(found.length===1){p+=2;notes.push("egy fogalom a játékból (+2)")}
+  else notes.push("nem találtam fogalmat a játékból (0)");
+  if(PERSP.test(t)){p+=2;notes.push("egy másik szereplő vagy csoport nézőpontja (+2)")}
+  else notes.push("nem jelenik meg más szereplő nézőpontja (0)");
+  if(CAUSE.test(t)){p+=1;notes.push("ok-okozati kötőszó (+1)")}
+  else notes.push("nincs ok-okozati kötőszó, pl. mert, ezért (0)");
+  if(words>=15&&words<=120&&sents>=2&&sents<=5){p+=1;notes.push("2–4 mondat, megfelelő hossz (+1)")}
+  else notes.push(words<15||sents<2?"túl rövid, legalább 2 mondat kell (0)":"túl hosszú, 2–4 mondat a cél (0)");
+  return{p,found,notes};
+}
+function renderRefl(){
+  const voteTxt=st.vote==="valt"?"„Változzék!”":"„Maradjon!”";
+  app.innerHTML=`<section class="card fade" style="display:flex;flex-direction:column;gap:14px">
+    <div class="meta">Indoklás · max. 8 pont</div>
+    <h2>Cselekedtél. Miért és hogyan?</h2>
+    <p>A neved mellé ezt írták a jegyzőkönyvbe: <b>${voteTxt}</b>. Indokold meg a döntésedet <b>2–4 mondatban</b>, a kisnemes szemszögéből. Használj legalább két fogalmat a játékból, és nevezd meg egy másik szereplő nézőpontját is (Varga Jancsi, a jobbágy, Ormós táblabíró, az idegen úr).</p>
+    <p style="color:var(--muted);font-size:.94rem">Pontozás: két fogalom 4 pont, egy fogalom 2 pont; másik nézőpont 2 pont; ok-okozati kötőszó (mert, ezért) 1 pont; megfelelő hossz 1 pont.</p>
+    <label for="nm" class="meta" style="margin:0">Neved (a tanárnak)</label>
+    <input id="nm" class="field" autocomplete="name" value="${esc(st.name)}" placeholder="Pl. Kiss Anna, 11.B">
+    <label for="refl" class="meta" style="margin:0">Indoklásod</label>
+    <textarea id="refl" placeholder="Azért szavaztam így, mert … Varga Jancsi szerint viszont …"></textarea>
+    <div class="row"><button class="btn big wine" id="sendR" type="button">Beadom</button><span class="hint" id="rhint"></span></div>
+  </section>`;
+  $("#sendR").onclick=()=>{
+    const v=$("#refl").value.trim();
+    if(!v){$("#rhint").textContent="Írj legalább két mondatot.";return}
+    st.name=$("#nm").value.trim();
+    const r=scoreRefl(v); st.refl={text:v,...r}; st.score+=r.p; st.max+=8; st.phase="done"; render(); window.scrollTo(0,0);
+  };
+}
+
+function renderDone(){
+  const quizPts=st.score-st.refl.p, quizMax=st.max-8;
+  const pct=Math.round(st.score/st.max*100);
+  const verdict=pct>=85?"A megye legfelkészültebb kisnemese.":pct>=60?"Ormós táblabíró is elismerően bólintana.":pct>=35?"Biztos alap; egy újabb kör után a fogalmak is a helyükre kerülnek.":"A kortes jobban ismeri a fogalmakat. Játszd újra, és vágj vissza neki.";
+  const end=S[st.scene];
+  const total=Object.values(st.motives).reduce((a,b)=>a+b,0)||1;
+  const mot=Object.keys(M).map(k=>({k,n:st.motives[k]||0})).sort((a,b)=>b.n-a.n);
+  const summary=`A kortes bora – eredmény
+Név: ${st.name||"(nem adta meg)"}
+Pont: ${st.score}/${st.max} (fogalmi kvíz ${quizPts}/${quizMax}, indoklás ${st.refl.p}/8)
+Szavazat: ${st.vote==="valt"?"Változzék":"Maradjon"} → ${end.place}
+Döntési profil: ${mot.filter(m=>m.n).map(m=>`${M[m.k]} ${m.n}`).join(", ")}
+Út: ${st.path.map(p=>p.split(": ")[1]).join(" · ")}
+Indoklás: ${st.refl.text}`;
+  app.innerHTML=`<section class="card fade" style="display:flex;flex-direction:column;gap:16px">
+    <div class="meta">Eredmény · ${esc(end.place)}</div>
+    <div class="big-score">${st.score}<span style="font-size:1.4rem;color:var(--muted)"> / ${st.max}</span></div>
+    <h2 style="font-size:1.4rem">${verdict}</h2>
+    <div class="tally"><span>Fogalmi próba (${st.usedQ.length} kérdés)</span><span>${quizPts} / ${quizMax}</span><span>Indoklás</span><span>${st.refl.p} / 8</span></div>
+  </section>
+  <section class="card" style="display:flex;flex-direction:column;gap:12px">
+    <div class="meta">Döntési profilod</div>
+    <p style="color:var(--muted);font-size:.95rem">Mi vezette a hat döntésedet? Ez nem pontszám, hanem beszélgetési alap: milyen indítékok mozgatták a reformkori kisnemest?</p>
+    <div class="motives">${mot.map(m=>`<div class="mot"><span>${M[m.k]}</span><span class="track"><i style="width:${Math.round(m.n/total*100)}%"></i></span><span class="n">${m.n}</span></div>`).join("")}</div>
+  </section>
+  <section class="card" style="display:flex;flex-direction:column;gap:10px">
+    <div class="meta">Indoklásod</div>
+    <p><i>„${esc(st.refl.text)}”</i></p>
+    ${st.refl.found.length?`<div class="tags">${st.refl.found.map(k=>`<span>${esc(V[k].t)}</span>`).join("")}</div>`:""}
+    <ul class="path" style="color:var(--ink)">${st.refl.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>
+    <p style="color:var(--muted);font-size:.9rem">A gép csak azt nézi, szerepelnek-e a fogalmak és a nézőpontok. Az érvelés minőségét a tanár értékeli.</p>
+  </section>
+  <section class="card" style="display:flex;flex-direction:column;gap:10px">
+    <div class="meta">Az utad estétől délig</div>
+    <ul class="path">${st.path.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+    <div class="row" style="margin-top:6px">
+      <button class="btn" id="copy" type="button">Eredmény másolása</button>
+      <button class="btn wine" id="again" type="button">Újra játszom</button>
+      <span class="hint" id="chint"></span>
+    </div>
+    <textarea id="sum" readonly hidden>${esc(summary)}</textarea>
+  </section>`;
+  $("#again").onclick=()=>{const nm=st.name;st=fresh();st.name=nm;st.phase="scene";render();window.scrollTo(0,0)};
+  $("#copy").onclick=()=>{
+    const ok=()=>$("#chint").textContent="Kimásolva, beillesztheted a tanárnak küldött üzenetbe.";
+    const fallback=()=>{const s=$("#sum");s.hidden=false;s.select();$("#chint").textContent="Jelöld ki és másold ki a szöveget."};
+    try{navigator.clipboard.writeText(summary).then(ok,fallback)}catch(e){fallback()}
+  };
+}
+
+/* ---------- Fogalom-buborék és Fogalomtár ---------- */
+const tip=$("#tip");
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".v[data-v]"); if(!b)return;
+  e.stopPropagation();
+  const v=V[b.dataset.v];
+  tip.innerHTML=`<div><b>${esc(v.t)}</b>: ${esc(v.d)}<br><span style="opacity:.8;font-size:.88rem">${esc(v.n)}</span></div><button type="button" aria-label="Bezár">×</button>`;
+  tip.hidden=false; tip.querySelector("button").onclick=()=>tip.hidden=true;
+  clearTimeout(tip._t); tip._t=setTimeout(()=>tip.hidden=true,9000);
+},true);
+$("#glossList").innerHTML=G.map(([h,ids])=>`<h3 class="gh">${esc(h)}</h3>`+ids.map(k=>V[k]).map(v=>`<div><span class="t">${esc(v.t)}</span><span>${esc(v.d)}</span><span class="n">${esc(v.n)}</span></div>`).join("")).join("");
+$("#glossBtn").onclick=()=>{const g=$("#glossary");g.hidden=!g.hidden;if(!g.hidden)g.scrollIntoView({block:"start"})};
+$("#glossClose").onclick=()=>{$("#glossary").hidden=true;window.scrollTo(0,0)};
+
+render();
+</script>
+
+</body></html>
